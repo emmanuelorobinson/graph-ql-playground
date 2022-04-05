@@ -6,5 +6,27 @@ function getTokenPayload(token) {
   return payload;
 }
 
-function getUserById(req, authToken) {
+function getUserId(req, authToken) {
+  if (req) {
+    const authHeader = req.headers["authorization"];
+    if (authHeader) {
+      const token = authHeader.replace("Bearer ", "");
+      if(!token) {
+        throw new Error("No token found");
+      }
+      const {userId}  = getTokenPayload(token);
+      return userId;
+    }
+  } else {
+    const {userId} = getTokenPayload(authToken);
+    return userId; 
+  }
+
+  throw new Error('Not authenticated');
+
 }
+
+module.exports = {
+  APP_SECRET,
+  getUserId
+};
